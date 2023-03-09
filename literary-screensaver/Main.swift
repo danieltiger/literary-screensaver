@@ -5,7 +5,7 @@ class Main: ScreenSaverView {
     var currQuote: Quote?
     var quotes: [Quote] = []
     
-    let THEME_MODE = "DARK"
+    let THEME_MODE = "LIGHT"
     
     let COLOUR = [
         "LIGHT": [
@@ -112,9 +112,9 @@ class Main: ScreenSaverView {
         let timeRange = (quote as NSString).range(of: subquote)
         
         let styledQuote = NSMutableAttributedString(string: quote)
-        styledQuote.addAttribute(NSForegroundColorAttributeName, value: COLOUR[self.THEME_MODE]!["QUOTE"]!, range: NSMakeRange(0, styledQuote.length))
-        styledQuote.addAttribute(NSForegroundColorAttributeName, value: COLOUR[self.THEME_MODE]!["TIME"]!, range: timeRange)
-        styledQuote.addAttribute(NSFontAttributeName, value: FONT_QUOTE, range: NSMakeRange(0, quote.count))
+        styledQuote.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["QUOTE"]!, range: NSMakeRange(0, styledQuote.length))
+        styledQuote.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["TIME"]!, range: timeRange)
+        styledQuote.addAttribute(NSAttributedString.Key.font, value: FONT_QUOTE, range: NSMakeRange(0, quote.count))
         
         let QUOTE_PADDING_LEFT = 100;
         let QUOTE_PADDING_RIGHT = 100;
@@ -135,8 +135,8 @@ class Main: ScreenSaverView {
      */
     func drawMetadata(title: String, author: String) {
         let styledMetadata = NSMutableAttributedString(string: "— \(title), \(author)")
-        styledMetadata.addAttribute(NSForegroundColorAttributeName, value: COLOUR[self.THEME_MODE]!["METADATA"]!, range: NSMakeRange(0, styledMetadata.length))
-        styledMetadata.addAttribute(NSFontAttributeName, value: FONT_METADATA, range: NSMakeRange(0, styledMetadata.length))
+        styledMetadata.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["METADATA"]!, range: NSMakeRange(0, styledMetadata.length))
+        styledMetadata.addAttribute(NSAttributedString.Key.font, value: FONT_METADATA, range: NSMakeRange(0, styledMetadata.length))
         
         styledMetadata.draw(in: CGRect(x: 100.0, y: 50, width: 1400, height: 50))
     }
@@ -146,7 +146,7 @@ class Main: ScreenSaverView {
      */
     func clearStage() {
         COLOUR[self.THEME_MODE]!["BACKGROUND"]!.setFill()
-        NSRectFill(self.bounds)
+        bounds.fill()
     }
     
     /**
