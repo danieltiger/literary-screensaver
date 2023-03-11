@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07BFA53B29BBF2D200FACA10 /* times in Resources */ = {isa = PBXBuildFile; fileRef = 07BFA53A29BBF2D200FACA10 /* times */; };
+		07BFA53C29BBF5B300FACA10 /* times in Resources */ = {isa = PBXBuildFile; fileRef = 07BFA53A29BBF2D200FACA10 /* times */; };
 		AE29A3E62116E84E003E6687 /* litclock_annotated.csv in Resources */ = {isa = PBXBuildFile; fileRef = AE29A3E52116E84E003E6687 /* litclock_annotated.csv */; };
 		AE7CF27921167143008A6BE0 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7CF27821167143008A6BE0 /* Main.swift */; };
 		AE8E03702116C50A0019F126 /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E036F2116C50A0019F126 /* Quote.swift */; };
@@ -19,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07BFA53A29BBF2D200FACA10 /* times */ = {isa = PBXFileReference; lastKnownFileType = folder; path = times; sourceTree = "<group>"; };
 		AE29A3E52116E84E003E6687 /* litclock_annotated.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = litclock_annotated.csv; sourceTree = "<group>"; };
 		AE7CF26B2116705C008A6BE0 /* literary-screensaver.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "literary-screensaver.saver"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE7CF2722116705C008A6BE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -71,6 +74,7 @@
 		AE7CF26D2116705C008A6BE0 /* literary-screensaver */ = {
 			isa = PBXGroup;
 			children = (
+				07BFA53A29BBF2D200FACA10 /* times */,
 				AE29A3E52116E84E003E6687 /* litclock_annotated.csv */,
 				AE7CF27821167143008A6BE0 /* Main.swift */,
 				AE7CF2722116705C008A6BE0 /* Info.plist */,
@@ -183,6 +187,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE29A3E62116E84E003E6687 /* litclock_annotated.csv in Resources */,
+				07BFA53B29BBF2D200FACA10 /* times in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,6 +195,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07BFA53C29BBF5B300FACA10 /* times in Resources */,
 				AEE3502021170A13006455AA /* litclock_annotated.csv in Resources */,
 				AEE3501521170907006455AA /* Assets.xcassets in Resources */,
 				AEE3501821170907006455AA /* MainMenu.xib in Resources */,
@@ -402,13 +408,13 @@
 				CODE_SIGN_ENTITLEMENTS = "literary-screensaver-test/literary_screensaver_test.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 5WFUXN96S7;
+				DEVELOPMENT_TEAM = ZNK53SK7M2;
 				INFOPLIST_FILE = "literary-screensaver-test/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.jamesliu.literary-screensaver-test";
+				PRODUCT_BUNDLE_IDENTIFIER = "co.foreign-domestic..literary-screensaver-test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -423,13 +429,13 @@
 				CODE_SIGN_ENTITLEMENTS = "literary-screensaver-test/literary_screensaver_test.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 5WFUXN96S7;
+				DEVELOPMENT_TEAM = ZNK53SK7M2;
 				INFOPLIST_FILE = "literary-screensaver-test/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.jamesliu.literary-screensaver-test";
+				PRODUCT_BUNDLE_IDENTIFIER = "co.foreign-domestic..literary-screensaver-test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.0;
