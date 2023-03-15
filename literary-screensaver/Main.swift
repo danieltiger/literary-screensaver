@@ -22,10 +22,10 @@ class Main: ScreenSaverView {
         ]
     ]
     
-    let FONT_QUOTE = NSFont(name: "Baskerville", size: 80)
-    let FONT_TIME = NSFont(name: "Baskerville", size: 80)
-    let FONT_TITLE = NSFont(name: "Baskerville", size: 54)
-    let FONT_METADATA = NSFont(name: "Baskerville-Italic", size: 54)
+    let FONT_QUOTE = NSFont(name: "Baskerville", size: 80) ?? NSFont.systemFont(ofSize: 80)
+    let FONT_TIME = NSFont(name: "Baskerville", size: 80) ?? NSFont.systemFont(ofSize: 80)
+    let FONT_TITLE = NSFont(name: "Baskerville", size: 54) ?? NSFont.systemFont(ofSize: 54)
+    let FONT_METADATA = NSFont(name: "Baskerville-Italic", size: 54) ?? NSFont.systemFont(ofSize: 54)
     
     override init?(frame: NSRect, isPreview: Bool) {
         super.init(frame: frame, isPreview: isPreview)
@@ -54,19 +54,17 @@ class Main: ScreenSaverView {
 
         let jsonTime = time.replacingOccurrences(of: ":", with: "_")
         let path = Bundle(for: type(of: self)).path(forResource: "times/\(jsonTime)", ofType: "json")
-        guard let path else { return nil }
-        let contents = try? String(contentsOfFile: path, encoding: .utf8)
+        guard let path else { return currQuote }
 
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
 
-        // TODO: Needs cleanup
-        if let jsonData = contents?.data(using: .utf8) {
-            let quotes = try? decoder.decode([Quote].self, from: jsonData)
-            return quotes?.randomElement()
+        let contents = try? String(contentsOfFile: path, encoding: .utf8)
+        if let jsonData = contents?.data(using: .utf8), let quotes = try? decoder.decode([Quote].self, from: jsonData) {
+            return quotes.randomElement()
         }
 
-        return nil
+        return currQuote
     }
     
     /**
@@ -159,7 +157,12 @@ class Main: ScreenSaverView {
         super.draw(rect)
         
         // Provide a default quote if one was not pulled for the current time.
-        let quote = self.currQuote ?? Quote(time: "00:00", quoteFirst: "", quoteTimeCase: "", quoteLast: "People assume that time is a strict progression of cause to effect, but actually — from a non-linear, non-subjective viewpoint — it's more like a big ball of wibbly-wobbly... timey-wimey... stuff.", title: "Doctor Who", author: "Tenth Doctor")
+        let quote = self.currQuote ?? Quote(time: "00:00",
+                                            quoteFirst: "",
+                                            quoteTimeCase: "",
+                                            quoteLast: "You would measure time the measureless and the immeasurable.\nYou would adjust your conduct and even direct the course of your spirit according to hours and seasons.\nOf time you would make a stream upon whose bank you would sit and watch its flowing.\nYet the timeless in you is aware of life’s timelessness,\nAnd knows that yesterday is but today’s memory and tomorrow is today’s dream. ",
+                                            title: "The Prophet",
+                                            author: "Khalil Gibran")
         
         clearStage()
         draw(quote: quote)
