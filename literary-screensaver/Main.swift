@@ -3,9 +3,8 @@ import ScreenSaver
 
 class Main: ScreenSaverView {
     var currQuote: Quote?
-    var currQuote2: Quote2?
-    var quotes: [Quote] = []
-    
+    var currTime: String?
+
     let THEME_MODE = "LIGHT"
     
     let COLOUR = [
@@ -33,9 +32,6 @@ class Main: ScreenSaverView {
         
         // Only update the frame every 5 seconds.
         animationTimeInterval = 5
-        
-        // Read in the quotes CSV.
-        self.quotes = readCSVToQuoteArray(fileName: "litclock_annotated")
     }
     
     required init?(coder decoder: NSCoder) {
@@ -51,18 +47,11 @@ class Main: ScreenSaverView {
      - Returns: the Quote struct associated with the given time, or nil if
                 a quote does not exist.
      */
-    func getQuoteFor(time: String) -> Quote? {
-        let quotesForTime = self.quotes.filter { $0.time == time }
-        
-        if quotesForTime.count > 0 {
-            return quotesForTime[0]
-        } else {
-            return nil
-        }
-    }
-
     // TODO: Randomly picking makes sense, but not on every frame
-    func quote(for time: String) -> Quote2? {
+    func quote(for time: String) -> Quote? {
+        guard currTime != time else { return currQuote }
+        currTime = time
+
         let jsonTime = time.replacingOccurrences(of: ":", with: "_")
         let path = Bundle(for: type(of: self)).path(forResource: "times/\(jsonTime)", ofType: "json")
         guard let path else { return nil }
@@ -73,30 +62,11 @@ class Main: ScreenSaverView {
 
         // TODO: Needs cleanup
         if let jsonData = contents?.data(using: .utf8) {
-            let quotes = try? decoder.decode([Quote2].self, from: jsonData)
-            return quotes?.first
+            let quotes = try? decoder.decode([Quote].self, from: jsonData)
+            return quotes?.randomElement()
         }
 
         return nil
-    }
-    
-    /**
-     Reads a CSV file at a specified file path into an array of Quote structs.
-     
-     - Parameter fileName: The name of the CSV file to read.
-     
-     - Returns: an array of Quote structs
-     */
-    func readCSVToQuoteArray(fileName: String) -> [Quote]! {
-        let path = Bundle(for: type(of: self)).path(forResource: fileName, ofType: "csv")
-        let contents = try? String(contentsOfFile: path!, encoding: .utf8)
-        
-        // Parse the CSV file into a 2D array, separating the rows by the newline character, and each
-        // column by the pipe symbol.
-        let parsedCSV: [[String]] = contents!.components(separatedBy: "\n").map{ $0.components(separatedBy: "|") }
-        
-        // Map each record to a new instance of Quote struct, returning the resulting array.
-        return parsedCSV.map {Quote(time: $0[0], subquote: $0[1], quote: $0[2], title: $0[3], author: $0[4])}
     }
     
     /**
@@ -105,8 +75,7 @@ class Main: ScreenSaverView {
      */
     override func animateOneFrame() {
         let time = getTime()
-        self.currQuote = getQuoteFor(time: time)
-        self.currQuote2 = quote(for: time)
+        self.currQuote = quote(for: time)
         
         // Tell Swift we want to use the draw(_:) method to handle rendering.
         self.setNeedsDisplay(self.frame)
@@ -129,28 +98,8 @@ class Main: ScreenSaverView {
      drawQuote draws the provided quote to the stage.
      
      - Parameter quote: The quote to draw onto the stage.
-     - Parameter subquote: The subquote to highlight.
      */
-    func drawQuote(_ quote: String, subquote: String) {
-        let timeRange = (quote as NSString).range(of: subquote)
-        
-        let styledQuote = NSMutableAttributedString(string: quote)
-        styledQuote.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["QUOTE"]!, range: NSMakeRange(0, styledQuote.length))
-        styledQuote.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["TIME"]!, range: timeRange)
-        styledQuote.addAttribute(NSAttributedString.Key.font, value: FONT_QUOTE, range: NSMakeRange(0, quote.count))
-        
-        let QUOTE_PADDING_LEFT = 100;
-        let QUOTE_PADDING_RIGHT = 100;
-        let QUOTE_PADDING_TOP = 100;
-        
-        // Where frame.size is the resolution of the current screen (works for multi-monitor display)
-        let QUOTE_BOX_WIDTH = Int(frame.size.width) - (QUOTE_PADDING_LEFT + QUOTE_PADDING_RIGHT);
-        let QUOTE_BOX_HEIGHT = Int(frame.size.height) - QUOTE_PADDING_TOP;
-        
-        styledQuote.draw(in: CGRect(x: QUOTE_PADDING_LEFT, y: 0, width: QUOTE_BOX_WIDTH, height: QUOTE_BOX_HEIGHT))
-    }
-
-    func draw(quote: Quote2) {
+    func draw(quote: Quote) {
         let styledQuote = NSMutableAttributedString(string: quote.quoteFirst)
         styledQuote.addAttribute(NSAttributedString.Key.font, value: FONT_QUOTE, range: NSMakeRange(0, styledQuote.length))
         styledQuote.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["QUOTE"]!, range: NSMakeRange(0, styledQuote.length))
@@ -210,12 +159,10 @@ class Main: ScreenSaverView {
         super.draw(rect)
         
         // Provide a default quote if one was not pulled for the current time.
-//        let quote = self.currQuote ?? Quote(time: "00:00", subquote: "", quote: "People assume that time is a strict progression of cause to effect, but actually — from a non-linear, non-subjective viewpoint — it's more like a big ball of wibbly-wobbly... timey-wimey... stuff.", title: "Doctor Who", author: "Tenth Doctor")
-        let quote2 = self.currQuote2 ?? Quote2(time: "00:00", quoteFirst: "", quoteTimeCase: "", quoteLast: "People assume that time is a strict progression of cause to effect, but actually — from a non-linear, non-subjective viewpoint — it's more like a big ball of wibbly-wobbly... timey-wimey... stuff.", title: "Doctor Who", author: "Tenth Doctor")
+        let quote = self.currQuote ?? Quote(time: "00:00", quoteFirst: "", quoteTimeCase: "", quoteLast: "People assume that time is a strict progression of cause to effect, but actually — from a non-linear, non-subjective viewpoint — it's more like a big ball of wibbly-wobbly... timey-wimey... stuff.", title: "Doctor Who", author: "Tenth Doctor")
         
         clearStage()
-//        drawQuote(quote.quote, subquote: quote.subquote)
-        draw(quote: quote2)
-        drawMetadata(title: quote2.title, author: quote2.author)
+        draw(quote: quote)
+        drawMetadata(title: quote.title, author: quote.author)
     }
 }
