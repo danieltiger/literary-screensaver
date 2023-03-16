@@ -47,7 +47,6 @@ class Main: ScreenSaverView {
      - Returns: the Quote struct associated with the given time, or nil if
                 a quote does not exist.
      */
-    // TODO: Randomly picking makes sense, but not on every frame
     func quote(for time: String) -> Quote? {
         guard currTime != time else { return currQuote }
         currTime = time
