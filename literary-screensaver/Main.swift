@@ -1,6 +1,40 @@
 import Foundation
 import ScreenSaver
 
+
+extension NSFont {
+
+    /**
+     Will return the best font conforming to the descriptor which will fit in the provided bounds.
+     */
+    static func bestFittingFontSize(for text: String, in bounds: CGRect, fontDescriptor: NSFontDescriptor, additionalAttributes: [NSAttributedString.Key: Any]? = nil) -> CGFloat {
+        let properBounds = CGRect(origin: .zero, size: bounds.size)
+        var attributes = additionalAttributes ?? [:]
+
+        let infiniteBounds = CGSize(width: bounds.width, height: CGFloat.infinity)
+        var bestFontSize: CGFloat = 80
+
+        for fontSize in stride(from: bestFontSize, through: 0, by: -1) {
+            let newFont = NSFont(descriptor: fontDescriptor, size: fontSize)
+            attributes[.font] = newFont
+
+            let currentFrame = text.boundingRect(with: infiniteBounds, options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil)
+
+            // TODO: Get rid of magic number
+            if currentFrame.height <= properBounds.height - 250 {
+                bestFontSize = fontSize
+                break
+            }
+        }
+        return bestFontSize
+    }
+
+    static func bestFittingFont(for text: String, in bounds: CGRect, fontDescriptor: NSFontDescriptor, additionalAttributes: [NSAttributedString.Key: Any]? = nil) -> NSFont {
+        let bestSize = bestFittingFontSize(for: text, in: bounds, fontDescriptor: fontDescriptor, additionalAttributes: additionalAttributes)
+        return NSFont(descriptor: fontDescriptor, size: bestSize) ?? NSFont.systemFont(ofSize: bestSize)
+    }
+}
+
 class Main: ScreenSaverView {
     var currQuote: Quote?
     var currTime: String?
@@ -97,20 +131,6 @@ class Main: ScreenSaverView {
      - Parameter quote: The quote to draw onto the stage.
      */
     func draw(quote: Quote) {
-        let styledQuote = NSMutableAttributedString(string: quote.quoteFirst)
-        styledQuote.addAttribute(NSAttributedString.Key.font, value: FONT_QUOTE, range: NSMakeRange(0, styledQuote.length))
-        styledQuote.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["QUOTE"]!, range: NSMakeRange(0, styledQuote.length))
-
-        let styledTime = NSMutableAttributedString(string: quote.quoteTimeCase)
-        styledTime.addAttribute(NSAttributedString.Key.font, value: FONT_TIME, range: NSMakeRange(0, styledTime.length))
-        styledTime.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["TIME"]!, range: NSMakeRange(0, styledTime.length))
-        styledQuote.append(styledTime)
-
-        let styledQuoteLast = NSMutableAttributedString(string: quote.quoteLast)
-        styledQuoteLast.addAttribute(NSAttributedString.Key.font, value: FONT_QUOTE, range: NSMakeRange(0, styledQuoteLast.length))
-        styledQuoteLast.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["QUOTE"]!, range: NSMakeRange(0, styledQuoteLast.length))
-        styledQuote.append(styledQuoteLast)
-
         let QUOTE_PADDING_LEFT = 100;
         let QUOTE_PADDING_RIGHT = 100;
         let QUOTE_PADDING_TOP = 100;
@@ -118,6 +138,23 @@ class Main: ScreenSaverView {
         // Where frame.size is the resolution of the current screen (works for multi-monitor display)
         let QUOTE_BOX_WIDTH = Int(frame.size.width) - (QUOTE_PADDING_LEFT + QUOTE_PADDING_RIGHT);
         let QUOTE_BOX_HEIGHT = Int(frame.size.height) - QUOTE_PADDING_TOP;
+
+        let rect = CGRect(x: QUOTE_PADDING_LEFT, y: 0, width: QUOTE_BOX_WIDTH, height: QUOTE_BOX_HEIGHT)
+        let font = NSFont.bestFittingFont(for: quote.fullQuote, in: rect, fontDescriptor: FONT_QUOTE.fontDescriptor)
+
+        let styledQuote = NSMutableAttributedString(string: quote.quoteFirst)
+        styledQuote.addAttribute(NSAttributedString.Key.font, value: font, range: NSMakeRange(0, styledQuote.length))
+        styledQuote.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["QUOTE"]!, range: NSMakeRange(0, styledQuote.length))
+
+        let styledTime = NSMutableAttributedString(string: quote.quoteTimeCase)
+        styledTime.addAttribute(NSAttributedString.Key.font, value: font, range: NSMakeRange(0, styledTime.length))
+        styledTime.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["TIME"]!, range: NSMakeRange(0, styledTime.length))
+        styledQuote.append(styledTime)
+
+        let styledQuoteLast = NSMutableAttributedString(string: quote.quoteLast)
+        styledQuoteLast.addAttribute(NSAttributedString.Key.font, value: font, range: NSMakeRange(0, styledQuoteLast.length))
+        styledQuoteLast.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["QUOTE"]!, range: NSMakeRange(0, styledQuoteLast.length))
+        styledQuote.append(styledQuoteLast)
 
         styledQuote.draw(in: CGRect(x: QUOTE_PADDING_LEFT, y: 0, width: QUOTE_BOX_WIDTH, height: QUOTE_BOX_HEIGHT))
     }
@@ -159,7 +196,7 @@ class Main: ScreenSaverView {
         let quote = self.currQuote ?? Quote(time: "00:00",
                                             quoteFirst: "",
                                             quoteTimeCase: "",
-                                            quoteLast: "You would measure time the measureless and the immeasurable.\nYou would adjust your conduct and even direct the course of your spirit according to hours and seasons.\nOf time you would make a stream upon whose bank you would sit and watch its flowing.\nYet the timeless in you is aware of life’s timelessness,\nAnd knows that yesterday is but today’s memory and tomorrow is today’s dream. ",
+                                            quoteLast: "You would measure time the measureless and the immeasurable.\nYou would adjust your conduct and even direct the course of your spirit according to hours and seasons.\nOf time you would make a stream upon whose bank you would sit and watch its flowing.\nYet the timeless in you is aware of life’s timelessness,\nAnd knows that yesterday is but today’s memory and tomorrow is today’s dream.",
                                             title: "The Prophet",
                                             author: "Khalil Gibran")
         

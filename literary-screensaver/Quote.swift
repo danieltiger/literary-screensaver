@@ -8,3 +8,9 @@ struct Quote: Decodable {
     var title: String
     var author: String
 }
+
+extension Quote {
+    var fullQuote: String {
+        "\(quoteFirst) \(quoteTimeCase) \(quoteLast)"
+    }
+}

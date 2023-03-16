@@ -76,9 +76,9 @@
 			children = (
 				07BFA53A29BBF2D200FACA10 /* times */,
 				AE29A3E52116E84E003E6687 /* litclock_annotated.csv */,
-				AE7CF27821167143008A6BE0 /* Main.swift */,
 				AE7CF2722116705C008A6BE0 /* Info.plist */,
 				AE8E036F2116C50A0019F126 /* Quote.swift */,
+				AE7CF27821167143008A6BE0 /* Main.swift */,
 			);
 			path = "literary-screensaver";
 			sourceTree = "<group>";
