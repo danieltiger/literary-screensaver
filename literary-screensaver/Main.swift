@@ -166,6 +166,8 @@ class Main: ScreenSaverView {
      - Parameter author: The author of the book.
      */
     func drawMetadata(title: String, author: String) {
+        let properBounds = CGRect(origin: .zero, size: bounds.size)
+
         let styledMetadata = NSMutableAttributedString(string: "- \(title), ")
         styledMetadata.addAttribute(NSAttributedString.Key.foregroundColor, value: COLOUR[self.THEME_MODE]!["METADATA"]!, range: NSMakeRange(0, styledMetadata.length))
         styledMetadata.addAttribute(NSAttributedString.Key.font, value: FONT_TITLE, range: NSMakeRange(0, styledMetadata.length))
@@ -175,7 +177,7 @@ class Main: ScreenSaverView {
         styledAuthor.addAttribute(NSAttributedString.Key.font, value: FONT_METADATA, range: NSMakeRange(0, styledAuthor.length))
         styledMetadata.append(styledAuthor)
         
-        styledMetadata.draw(in: CGRect(x: 100.0, y: 50, width: 1400, height: 150))
+        styledMetadata.draw(in: CGRect(x: 100.0, y: 50, width: properBounds.width, height: 150))
     }
     
     /**
@@ -199,7 +201,7 @@ class Main: ScreenSaverView {
                                             quoteLast: "You would measure time the measureless and the immeasurable.\nYou would adjust your conduct and even direct the course of your spirit according to hours and seasons.\nOf time you would make a stream upon whose bank you would sit and watch its flowing.\nYet the timeless in you is aware of life’s timelessness,\nAnd knows that yesterday is but today’s memory and tomorrow is today’s dream.",
                                             title: "The Prophet",
                                             author: "Khalil Gibran")
-        
+
         clearStage()
         draw(quote: quote)
         drawMetadata(title: quote.title, author: quote.author)
